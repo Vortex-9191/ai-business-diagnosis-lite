@@ -55,12 +55,15 @@ const AnalysisLoading: React.FC<AnalysisLoadingProps> = ({ progress = 0 }) => {
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
         {/* ロゴとタイトル */}
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-8 gap-3">
           <img 
             src="/screenshot-2025-06-18-15-32-55.png" 
             alt="AI ビジネス診断" 
             className="h-20 w-auto"
           />
+          <span className="text-3xl font-bold text-[#59B3B3] tracking-wider">
+            LITE
+          </span>
         </div>
         
         <div className="w-24 h-24 bg-gradient-to-r from-[#59B3B3] to-[#4A9999] rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">

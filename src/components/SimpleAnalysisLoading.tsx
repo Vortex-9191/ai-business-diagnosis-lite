@@ -6,12 +6,15 @@ const SimpleAnalysisLoading: React.FC = () => {
     <div className="max-w-4xl mx-auto">
       <div className="text-center">
         {/* ロゴ */}
-        <div className="flex items-center justify-center mb-12">
+        <div className="flex items-center justify-center mb-12 gap-3">
           <img 
             src="/screenshot-2025-06-18-15-32-55.png" 
             alt="AI ビジネス診断" 
             className="h-24 w-auto"
           />
+          <span className="text-4xl font-bold text-[#59B3B3] tracking-wider">
+            LITE
+          </span>
         </div>
         
         {/* 分析中アイコン */}

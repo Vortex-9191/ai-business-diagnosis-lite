@@ -500,12 +500,15 @@ function App() {
         <div className="text-center mb-8 sm:mb-12">
           <div className="flex items-center justify-center mb-4 sm:mb-6">
             {/* ロゴ画像 */}
-            <div className="inline-flex items-center justify-center">
+            <div className="inline-flex items-center justify-center gap-3">
               <img 
                 src="/screenshot-2025-06-18-15-32-55.png" 
                 alt="AI ビジネス診断" 
                 className="h-12 sm:h-16 md:h-20 w-auto"
               />
+              <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#59B3B3] tracking-wider">
+                LITE
+              </span>
             </div>
           </div>
           <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed px-2">
