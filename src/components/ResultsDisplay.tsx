@@ -205,7 +205,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       {output ? (
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <div className="flex items-center justify-center mb-6">
-            <h3 className="text-2xl font-bold text-slate-800">AI診断結果</h3>
+            <h3 className="text-2xl font-bold text-slate-800">あなたのAI活用タイプは…</h3>
           </div>
           <div className="flex justify-center">
             {output.includes('drive.google.com') ? (
@@ -264,7 +264,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       ) : (
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <div className="flex items-center justify-center mb-6">
-            <h3 className="text-2xl font-bold text-slate-800">AI診断結果</h3>
+            <h3 className="text-2xl font-bold text-slate-800">あなたのAI活用タイプは…</h3>
           </div>
           <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
             <p className="text-gray-500">分析チャートを生成中...</p>
@@ -276,7 +276,70 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       <div className="space-y-6">
         {text_1 ? (
           <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
-            <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: text_1 }} />
+            {/* タイプと使い方をパースして装飾 */}
+            {(() => {
+              // 【あなたのタイプ】と【こんな使い方がいいかも？】を分割
+              const typeMatch = text_1.match(/【あなたのタイプ】([^【]*)/s);
+              const usageMatch = text_1.match(/【こんな使い方がいいかも？】([\s\S]*?)(?=【|$)/);
+              
+              if (typeMatch || usageMatch) {
+                const typeContent = typeMatch ? typeMatch[1].trim() : '';
+                const usageContent = usageMatch ? usageMatch[1].trim() : '';
+                
+                return (
+                  <div className="space-y-6">
+                    {/* タイプセクション */}
+                    {typeContent && (
+                      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border-2 border-purple-200">
+                        <div className="flex items-center mb-4">
+                          <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-3">
+                            <span className="text-white font-bold text-lg">A</span>
+                          </div>
+                          <h4 className="text-xl font-bold text-slate-800">あなたのタイプ</h4>
+                        </div>
+                        <p className="text-lg text-slate-700 font-medium">
+                          {typeContent.replace(/<[^>]*>/g, '')}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* 使い方セクション */}
+                    {usageContent && (
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border-2 border-blue-200">
+                        <div className="flex items-center mb-4">
+                          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                            <span className="text-white font-bold">✓</span>
+                          </div>
+                          <h4 className="text-xl font-bold text-slate-800">こんな使い方がいいかも？</h4>
+                        </div>
+                        <div className="space-y-3">
+                          {usageContent.split('\n').filter(line => line.trim()).map((line, index) => {
+                            // 各行をパースしてリストアイテムとして表示
+                            const cleanLine = line.replace(/<[^>]*>/g, '').trim();
+                            if (!cleanLine) return null;
+                            
+                            return (
+                              <div key={index} className="flex items-start">
+                                <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                <p className="text-slate-700">{cleanLine}</p>
+                              </div>
+                            );
+                          }).filter(Boolean)}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* パースできない場合は元の表示 */}
+                    {!typeContent && !usageContent && (
+                      <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: text_1 }} />
+                    )}
+                  </div>
+                );
+              } else {
+                // マッチしない場合は元の表示
+                return <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: text_1 }} />;
+              }
+            })()}
           </div>
         ) : null}
         
