@@ -60,6 +60,55 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
   // 各可能な場所から値を探す
   for (const rawResult of possibleResults) {
     if (rawResult && typeof rawResult === 'object') {
+      // outputフィールドを優先的にチェック
+      if (rawResult.output) {
+        const outputStr = String(rawResult.output);
+        console.log('📝 Raw output content:', outputStr);
+        
+        // outputに全てのデータが含まれている場合（<hr>で区切られている）
+        if (outputStr.includes('<hr>')) {
+          const sections = outputStr.split('<hr>');
+          console.log('📝 Found sections:', sections.length);
+          
+          // 最初のセクション：GoogleドライブURL
+          if (sections[0]) {
+            // GoogleドライブのURLを抽出（viewリンクを直接表示用に変換）
+            const urlMatch = sections[0].match(/https:\/\/drive\.google\.com\/file\/d\/([^\/]+)/);
+            if (urlMatch) {
+              const fileId = urlMatch[1];
+              output = `https://drive.google.com/uc?export=view&id=${fileId}`;
+              console.log('🖼️ Converted image URL:', output);
+            } else {
+              output = sections[0].trim();
+            }
+          }
+          
+          // 2番目のセクション：text_1（タイプと使い方）
+          if (sections[1]) {
+            text_1 = sections[1].trim();
+          }
+          
+          // 3番目のセクション：text（AI活用分析）
+          if (sections[2]) {
+            text = sections[2].trim();
+            // 名前を抽出
+            const nameMatch = text.match(/<strong>([^さ]+)さん/);
+            if (nameMatch) {
+              name = nameMatch[1];
+            }
+          }
+          
+          // 4番目のセクション：text_3（AI活用指針）
+          if (sections[3]) {
+            text_3 = sections[3].trim();
+          }
+          
+          console.log('✅ Parsed from output:', { output, text_1, text, text_3, name });
+          break;
+        }
+      }
+      
+      // 従来の個別フィールドチェック（フォールバック）
       if (!output && rawResult.output) output = rawResult.output;
       if (!text_1 && rawResult.text_1) text_1 = rawResult.text_1;
       if (!text && rawResult.text) text = rawResult.text;
