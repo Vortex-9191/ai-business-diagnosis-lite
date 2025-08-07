@@ -78,8 +78,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
             if (urlMatch) {
               const fileId = urlMatch[1];
               // 複数のGoogleドライブURL形式を試す
-              // 1. thumbnail APIを使用（高速、CORS対応）
-              output = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+              // 1. thumbnail APIを使用（高速、CORS対応） - サイズを適切に
+              output = `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
               console.log('🖼️ Using Google Drive thumbnail API:', output);
               console.log('🖼️ File ID:', fileId);
             } else {
@@ -209,13 +209,13 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
           </div>
           <div className="flex justify-center">
             {output.includes('drive.google.com') ? (
-              // Googleドライブの場合はiframeを使用
-              <div className="w-full max-w-2xl">
+              // Googleドライブの場合
+              <div className="w-full max-w-md mx-auto">
                 <img 
                   src={output} 
                   alt="AI診断結果チャート" 
                   className="w-full h-auto rounded-lg shadow-md"
-                  style={{ maxHeight: '500px' }}
+                  style={{ maxHeight: '400px', objectFit: 'contain' }}
                   onError={(e) => {
                     console.error('❌ Image load error, trying alternative URL:', output);
                     // エラー時に代替URLを試す
@@ -250,12 +250,14 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
               </div>
             ) : (
               // 通常のURLの場合
-              <img 
-                src={output} 
-                alt="AI診断結果チャート" 
-                className="max-w-full h-auto rounded-lg shadow-md"
-                style={{ maxHeight: '500px' }}
-              />
+              <div className="w-full max-w-md mx-auto">
+                <img 
+                  src={output} 
+                  alt="AI診断結果チャート" 
+                  className="w-full h-auto rounded-lg shadow-md"
+                  style={{ maxHeight: '400px', objectFit: 'contain' }}
+                />
+              </div>
             )}
           </div>
         </div>
