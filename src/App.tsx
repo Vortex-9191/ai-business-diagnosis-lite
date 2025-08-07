@@ -37,7 +37,6 @@ function App() {
     BusinessChallenge2: '',
     BusinessChallenge3: '',
     Q1: null, Q2: null, Q3: null, Q4: null, Q5: null, Q6: null, Q7: null, Q8: null, Q9: null, Q10: null,
-    Q36: '', Q37: '', Q38: '', Q39: '', Q40: '',
     name: '',
     company: '',
     Yuryo: '',

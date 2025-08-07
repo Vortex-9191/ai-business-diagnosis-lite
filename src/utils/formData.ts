@@ -230,13 +230,7 @@ export const aiQuestions: AIQuestion[] = [
   { id: 'Q7', text: 'Excel/GAS/VBA等を使った業務自動化や、Slack/Teams上でのAIワークフロー構築経験はありますか？', category: 'automation' },
   { id: 'Q8', text: 'DifyなどのノーコードツールやGPTs/AI Botを業務改善に活用していますか？', category: 'automation' },
   { id: 'Q9', text: '社内文書のRAG検索システム構築や、AIエージェントによる業務自動化を実施していますか？', category: 'advanced' },
-  { id: 'Q10', text: 'AI活用のROI（削減工数/実施コスト）を可視化し、定期的に改善していますか？', category: 'advanced' },
-  
-  { id: 'Q36', text: '生成AIを活用して解決したい悩みや目的はありますか？', type: 'text', category: 'free' },
-  { id: 'Q37', text: '生成AIに関わらずご自身の業務内で時間が要しており削減したい業務はありますか？', type: 'text', category: 'free' },
-  { id: 'Q38', text: '社内で最も生成AIに詳しい方はどなたですか？', type: 'text', category: 'organization' },
-  { id: 'Q39', text: '社内で生成AI推進の適任者はどなたですか？', type: 'text', category: 'organization' },
-  { id: 'Q40', text: '上記の方を上げた理由を教えてください。', type: 'text', category: 'organization' }
+  { id: 'Q10', text: 'AI活用のROI（削減工数/実施コスト）を可視化し、定期的に改善していますか？', category: 'advanced' }
 ];
 
 export const scaleLabels = [
@@ -264,7 +258,5 @@ export const questionCategories: Record<string, QuestionCategory> = {
   governance: { name: 'ガバナンス・リスク基盤', color: '#EF4444', questions: 'Q2-Q3' },
   prompt: { name: 'プロンプト活用度', color: '#10B981', questions: 'Q4,Q6' },
   automation: { name: '自動化スキル', color: '#F59E0B', questions: 'Q7-Q8' },
-  advanced: { name: '高度AI技術', color: '#8B5CF6', questions: 'Q9-Q10' },
-  free: { name: '自由記述', color: '#6B7280', questions: 'Q36-Q37' },
-  organization: { name: '組織関連', color: '#EC4899', questions: 'Q38-Q40' }
+  advanced: { name: '高度AI技術', color: '#8B5CF6', questions: 'Q9-Q10' }
 };

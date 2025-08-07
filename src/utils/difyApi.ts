@@ -93,12 +93,7 @@ export const submitDiagnosis = async (formData: FormData): Promise<DiagnosisResu
     inputs.BusinessChallenge3 = formData.BusinessChallenge3;
   }
   
-  // Q36-Q40 are also required by Dify
-  inputs.Q36 = formData.Q36 || '';
-  inputs.Q37 = formData.Q37 || '';
-  inputs.Q38 = formData.Q38 || '';
-  inputs.Q39 = formData.Q39 || '';
-  inputs.Q40 = formData.Q40 || '';
+  // Q36-Q40は削除済み（ライト版では使用しない）
   
   // Other optional fields
   if (formData.Yuryo && formData.Yuryo.trim() !== '') {
