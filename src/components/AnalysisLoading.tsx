@@ -12,38 +12,24 @@ const AnalysisLoading: React.FC<AnalysisLoadingProps> = ({ progress = 0 }) => {
   const analysisSteps = [
     {
       id: 1,
-      title: "回答データを解析中",
+      title: "回答データを送信中",
       icon: Brain,
       color: "#59B3B3",
-      description: "35項目の回答パターンを分析しています"
+      description: "10項目の回答データを分析サーバーに送信しています"
     },
     {
       id: 2,
-      title: "AIリテラシーを評価中",
-      icon: Zap,
+      title: "AI診断を実行中",
+      icon: Cpu,
       color: "#59B3B3",
-      description: "AI知識と活用意欲を測定しています"
+      description: "回答パターンを基にAI診断を実行しています"
     },
     {
       id: 3,
-      title: "ガバナンス基盤を診断中",
-      icon: Shield,
+      title: "結果を生成中",
+      icon: Zap,
       color: "#59B3B3",
-      description: "リスク管理とセキュリティ体制を確認しています"
-    },
-    {
-      id: 4,
-      title: "スキルレベルを算出中",
-      icon: Cpu,
-      color: "#59B3B3",
-      description: "プロンプト技術と自動化能力を評価しています"
-    },
-    {
-      id: 5,
-      title: "最適な提案を生成中",
-      icon: Rocket,
-      color: "#59B3B3",
-      description: "あなたに最適なAI活用方法を提案しています"
+      description: "診断結果とレポートを生成しています"
     }
   ];
 
@@ -90,12 +76,12 @@ const AnalysisLoading: React.FC<AnalysisLoadingProps> = ({ progress = 0 }) => {
       <div className="mb-12">
         <div className="flex justify-between text-sm text-slate-500 mb-2">
           <span>分析進捗</span>
-          <span>{Math.min(currentStep * 20, 100)}%</span>
+          <span>{Math.min(Math.round(currentStep * 33.33), 100)}%</span>
         </div>
         <div className="w-full bg-slate-200 rounded-full h-3">
           <div 
             className="h-3 bg-gradient-to-r from-[#59B3B3] to-[#4A9999] rounded-full transition-all duration-1000 ease-out"
-            style={{ width: `${Math.min(currentStep * 20, 100)}%` }}
+            style={{ width: `${Math.min(Math.round(currentStep * 33.33), 100)}%` }}
           />
         </div>
       </div>

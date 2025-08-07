@@ -17,7 +17,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
       <div className="max-w-4xl mx-auto text-center">
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-12">
           <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-4xl">⚠️</span>
+            <div className="text-4xl font-bold text-red-500">!</div>
           </div>
           <h2 className="text-3xl font-bold text-slate-800 mb-4">分析結果の取得に失敗しました</h2>
           <p className="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
@@ -160,7 +160,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
 
   const handleShare = async () => {
     const shareData = {
-      title: 'AI活用診断結果',
+      title: 'AI診断結果',
       text: `${name ? `${name}さんの` : '私の'}AI活用診断が完了しました 🤖✨`,
       url: window.location.href
     };
@@ -186,8 +186,8 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       {/* ヘッダー */}
       <div className="text-center">
         <div className="inline-flex items-center justify-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-[#59B3B3] flex items-center justify-center text-3xl shadow-lg">
-            🎯
+          <div className="w-20 h-20 rounded-full bg-[#59B3B3] flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 bg-white rounded-full"></div>
           </div>
         </div>
         <h2 className="text-4xl font-bold text-slate-800 mb-3">診断完了！</h2>
@@ -198,12 +198,12 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       {output ? (
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <div className="flex items-center justify-center mb-6">
-            <h3 className="text-2xl font-bold text-slate-800">AI活用スキル分析</h3>
+            <h3 className="text-2xl font-bold text-slate-800">AI診断結果</h3>
           </div>
           <div className="flex justify-center">
             <img 
               src={output} 
-              alt="AI活用スキル分析チャート" 
+              alt="AI診断結果チャート" 
               className="max-w-full h-auto rounded-lg shadow-md"
               style={{ maxHeight: '500px' }}
               onError={(e) => {
@@ -216,7 +216,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       ) : (
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <div className="flex items-center justify-center mb-6">
-            <h3 className="text-2xl font-bold text-slate-800">AI活用スキル分析</h3>
+            <h3 className="text-2xl font-bold text-slate-800">AI診断結果</h3>
           </div>
           <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
             <p className="text-gray-500">分析チャートを生成中...</p>
@@ -236,7 +236,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
           <div className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-xl p-6 border border-teal-100 shadow-lg">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-[#59B3B3] rounded-2xl flex items-center justify-center mr-4 shadow-md">
-                <span className="text-white text-xl">📊</span>
+                <div className="w-6 h-6 bg-white rounded-full"></div>
               </div>
               <div>
                 <h4 className="text-2xl font-bold text-slate-800">{name || 'あなた'}さんのAI活用分析</h4>
@@ -252,7 +252,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
           <div className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-xl p-6 border border-teal-100 shadow-lg">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-[#59B3B3] rounded-2xl flex items-center justify-center mr-4 shadow-md">
-                <span className="text-white text-xl">💡</span>
+                <div className="w-6 h-6 bg-white rounded-full"></div>
               </div>
               <div>
                 <h4 className="text-2xl font-bold text-slate-800">{name || 'あなた'}さんのAI活用指針</h4>
@@ -269,7 +269,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
           <div className="bg-yellow-50 rounded-2xl shadow-lg border border-yellow-200 p-8">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-yellow-500 rounded-2xl flex items-center justify-center mr-4 shadow-md">
-                <span className="text-white text-xl">⚠️</span>
+                <div className="text-white text-xl font-bold">!</div>
               </div>
               <div>
                 <h4 className="text-2xl font-bold text-slate-800">分析結果を処理中です</h4>
@@ -325,7 +325,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       {/* フッター情報 */}
       <div className="text-center">
         <div className="inline-flex items-center space-x-2 text-sm text-slate-500 bg-white rounded-full px-4 py-2 border border-slate-200">
-          <span>🔒</span>
+          <div className="w-4 h-4 bg-slate-400 rounded-full inline-block"></div>
           <span>あなたの回答データは安全に処理され、プライバシーが保護されています</span>
         </div>
       </div>
