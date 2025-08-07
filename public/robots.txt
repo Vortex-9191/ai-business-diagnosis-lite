@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# AI Business Diagnosis App - Private/Internal Use Only
+# This application is not intended for public search engine indexing

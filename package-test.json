@@ -1,0 +1,12 @@
+{
+  "name": "ai-diagnosis-test",
+  "version": "1.0.0",
+  "description": "Automated test for AI Business Diagnosis",
+  "main": "test-diagnosis.js",
+  "scripts": {
+    "test": "node test-diagnosis.js"
+  },
+  "dependencies": {
+    "puppeteer": "^21.0.0"
+  }
+}

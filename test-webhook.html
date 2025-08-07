@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webhook Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 8px; }
+        .button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; }
+        .error { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+    </style>
+</head>
+<body>
+    <h1>AI Diagnosis Webhook Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Direct Results Display</h2>
+        <button class="button" onclick="testResultsDisplay()">Test Results Display</button>
+        <div id="results-test" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test Webhook Endpoint</h2>
+        <button class="button" onclick="testWebhookEndpoint()">Test Webhook POST</button>
+        <div id="webhook-test" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test URL Parameter Processing</h2>
+        <button class="button" onclick="testURLParams()">Test URL Parameters</button>
+        <div id="url-test" class="result"></div>
+    </div>
+
+    <script>
+        // Test 1: Check if results display works
+        function testResultsDisplay() {
+            const resultDiv = document.getElementById('results-test');
+            resultDiv.innerHTML = '⏳ Testing results display...';
+            
+            const testData = {
+                result: "Sample AI analysis result from webhook test",
+                workflow_run_id: "test_" + Date.now()
+            };
+            
+            const testUrl = `https://ai-business-diagnosis.vercel.app/?step=5&webhook_data=${encodeURIComponent(JSON.stringify(testData))}`;
+            
+            // Open in new tab for testing
+            window.open(testUrl, '_blank');
+            
+            resultDiv.innerHTML = `
+                <div class="success">✅ Test URL opened in new tab</div>
+                <div>Test URL: <a href="${testUrl}" target="_blank">${testUrl}</a></div>
+                <div>Check if the new tab shows the results page with the sample analysis.</div>
+            `;
+        }
+        
+        // Test 2: Test webhook endpoint
+        async function testWebhookEndpoint() {
+            const resultDiv = document.getElementById('webhook-test');
+            resultDiv.innerHTML = '⏳ Testing webhook endpoint...';
+            
+            try {
+                const testData = new URLSearchParams({
+                    result: "Test AI analysis result",
+                    workflow_run_id: "test_webhook_" + Date.now(),
+                    event: "workflow_finished"
+                });
+                
+                const response = await fetch('https://ai-business-diagnosis.vercel.app/api/webhook-simple', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: testData
+                });
+                
+                if (response.ok) {
+                    const html = await response.text();
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Webhook endpoint responded successfully</div>
+                        <div>Status: ${response.status}</div>
+                        <div>Response contains redirect logic: ${html.includes('window.location.href') ? 'Yes' : 'No'}</div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">❌ Webhook endpoint error</div>
+                        <div>Status: ${response.status}</div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">❌ Network error: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Test 3: Test URL parameter processing
+        function testURLParams() {
+            const resultDiv = document.getElementById('url-test');
+            
+            // Test different URL formats
+            const testUrls = [
+                'https://ai-business-diagnosis.vercel.app/?step=5&webhook_data=%7B%22result%22%3A%22Test%20result%201%22%7D',
+                'https://ai-business-diagnosis.vercel.app/?step=5&result=%7B%22data%22%3A%7B%22outputs%22%3A%7B%22result%22%3A%22Test%20result%202%22%7D%7D%7D',
+                'https://ai-business-diagnosis.vercel.app/?webhook=received&data=%7B%22result%22%3A%22Test%20result%203%22%7D'
+            ];
+            
+            let html = '<div class="success">✅ URL parameter test links generated</div>';
+            testUrls.forEach((url, index) => {
+                html += `<div><a href="${url}" target="_blank">Test Format ${index + 1}</a></div>`;
+            });
+            html += '<div>Click each link to test different URL parameter formats.</div>';
+            
+            resultDiv.innerHTML = html;
+        }
+        
+        // Auto-run basic tests on load
+        window.onload = function() {
+            document.getElementById('results-test').innerHTML = '📋 Ready to test results display';
+            document.getElementById('webhook-test').innerHTML = '📋 Ready to test webhook endpoint';
+            document.getElementById('url-test').innerHTML = '📋 Ready to test URL parameters';
+        };
+    </script>
+</body>
+</html>
