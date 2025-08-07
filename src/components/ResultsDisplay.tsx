@@ -72,14 +72,18 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
           
           // 最初のセクション：GoogleドライブURL
           if (sections[0]) {
+            console.log('🔍 Checking first section for image URL:', sections[0]);
             // GoogleドライブのURLを抽出（viewリンクを直接表示用に変換）
-            const urlMatch = sections[0].match(/https:\/\/drive\.google\.com\/file\/d\/([^\/]+)/);
+            const urlMatch = sections[0].match(/https:\/\/drive\.google\.com\/file\/d\/([^\/\s]+)/);
             if (urlMatch) {
               const fileId = urlMatch[1];
               output = `https://drive.google.com/uc?export=view&id=${fileId}`;
-              console.log('🖼️ Converted image URL:', output);
+              console.log('🖼️ Converted Google Drive URL:', output);
+              console.log('🖼️ File ID:', fileId);
             } else {
+              // URLが見つからない場合、そのまま使用
               output = sections[0].trim();
+              console.log('⚠️ No Google Drive URL pattern found, using raw output:', output);
             }
           }
           
@@ -195,6 +199,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       </div>
 
       {/* Googleドライブの画像表示 */}
+      {console.log('🌐 Rendering image section, output value:', output)}
       {output ? (
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <div className="flex items-center justify-center mb-6">
@@ -208,7 +213,11 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
               style={{ maxHeight: '500px' }}
               onError={(e) => {
                 console.error('❌ Image load error:', output);
-                e.currentTarget.style.display = 'none';
+                // 画像読み込みエラー時は代替テキストを表示
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.innerHTML = '<div class="flex items-center justify-center h-64 bg-gray-50 rounded-lg"><p class="text-gray-500">診断チャートの読み込みに失敗しました</p></div>';
+                }
               }}
             />
           </div>
