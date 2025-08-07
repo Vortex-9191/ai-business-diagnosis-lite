@@ -36,23 +36,51 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
   }
   
   // Difyからの結果を解析 - 新しい形式に対応
+  console.log('🔍 Full results object:', results);
+  console.log('🔍 Results.data:', results?.data);
+  console.log('🔍 Results.data.outputs:', results?.data?.outputs);
+  
   let output = '';
   let text_1 = '';
   let text = '';
   let text_3 = '';
   let name = '';
   
-  // 複数の形式に対応
-  const rawResult = results?.data?.outputs || results?.data || (results as any) || {};
+  // 複数の形式に対応 - より多くのパターンをチェック
+  const possibleResults = [
+    results?.data?.outputs,
+    results?.data,
+    (results as any)?.outputs,
+    (results as any)?.result,
+    results
+  ];
   
-  // 新しい形式のデータを抽出
-  if (rawResult.output) output = rawResult.output;
-  if (rawResult.text_1) text_1 = rawResult.text_1;
-  if (rawResult.text) text = rawResult.text;
-  if (rawResult.text_3) text_3 = rawResult.text_3;
-  if (rawResult.name) name = rawResult.name;
+  console.log('🔍 Checking possible result locations:', possibleResults);
   
-  console.log('📊 Parsed data:', { output, text_1, text, text_3, name });
+  // 各可能な場所から値を探す
+  for (const rawResult of possibleResults) {
+    if (rawResult && typeof rawResult === 'object') {
+      if (!output && rawResult.output) output = rawResult.output;
+      if (!text_1 && rawResult.text_1) text_1 = rawResult.text_1;
+      if (!text && rawResult.text) text = rawResult.text;
+      if (!text_3 && rawResult.text_3) text_3 = rawResult.text_3;
+      if (!name && rawResult.name) name = rawResult.name;
+      
+      // デバッグ用：どこでデータが見つかったか
+      if (rawResult.output || rawResult.text_1 || rawResult.text || rawResult.text_3) {
+        console.log('✅ Found data in:', rawResult);
+        break;
+      }
+    }
+  }
+  
+  console.log('📊 Final parsed data:', { output, text_1, text, text_3, name });
+  
+  // データが何も取得できていない場合の詳細なログ
+  if (!output && !text_1 && !text && !text_3) {
+    console.error('❌ No data found in any expected location');
+    console.error('❌ Full results structure:', JSON.stringify(results, null, 2));
+  }
 
   const handleDownload = () => {
     const resultsText = `
@@ -118,7 +146,7 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
       </div>
 
       {/* Googleドライブの画像表示 */}
-      {output && (
+      {output ? (
         <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
           <div className="flex items-center justify-center mb-6">
             <h3 className="text-2xl font-bold text-slate-800">AI活用スキル分析</h3>
@@ -129,20 +157,33 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
               alt="AI活用スキル分析チャート" 
               className="max-w-full h-auto rounded-lg shadow-md"
               style={{ maxHeight: '500px' }}
+              onError={(e) => {
+                console.error('❌ Image load error:', output);
+                e.currentTarget.style.display = 'none';
+              }}
             />
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
+          <div className="flex items-center justify-center mb-6">
+            <h3 className="text-2xl font-bold text-slate-800">AI活用スキル分析</h3>
+          </div>
+          <div className="flex justify-center items-center h-64 bg-gray-50 rounded-lg">
+            <p className="text-gray-500">分析チャートを生成中...</p>
           </div>
         </div>
       )}
 
       {/* 分析結果セクション */}
       <div className="space-y-6">
-        {text_1 && (
+        {text_1 ? (
           <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
             <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: text_1 }} />
           </div>
-        )}
+        ) : null}
         
-        {text && (
+        {text ? (
           <div className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-xl p-6 border border-teal-100 shadow-lg">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-[#59B3B3] rounded-2xl flex items-center justify-center mr-4 shadow-md">
@@ -156,9 +197,9 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
               <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: text }} />
             </div>
           </div>
-        )}
+        ) : null}
         
-        {text_3 && (
+        {text_3 ? (
           <div className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-xl p-6 border border-teal-100 shadow-lg">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-[#59B3B3] rounded-2xl flex items-center justify-center mr-4 shadow-md">
@@ -170,6 +211,36 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
             </div>
             <div className="bg-white rounded-xl p-6 border border-teal-200">
               <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: text_3 }} />
+            </div>
+          </div>
+        ) : null}
+        
+        {/* データが何もない場合の表示 */}
+        {!text_1 && !text && !text_3 && (
+          <div className="bg-yellow-50 rounded-2xl shadow-lg border border-yellow-200 p-8">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 bg-yellow-500 rounded-2xl flex items-center justify-center mr-4 shadow-md">
+                <span className="text-white text-xl">⚠️</span>
+              </div>
+              <div>
+                <h4 className="text-2xl font-bold text-slate-800">分析結果を処理中です</h4>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl p-6 border border-yellow-200">
+              <p className="text-gray-600">
+                AI分析が完了しましたが、詳細な結果の取得に時間がかかっています。<br />
+                しばらくお待ちいただくか、再度診断をお試しください。
+              </p>
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm text-gray-500">
+                  デバッグ情報：<br />
+                  - output: {output ? '取得済み' : '未取得'}<br />
+                  - text_1: {text_1 ? '取得済み' : '未取得'}<br />
+                  - text: {text ? '取得済み' : '未取得'}<br />
+                  - text_3: {text_3 ? '取得済み' : '未取得'}<br />
+                  - name: {name || '未取得'}
+                </p>
+              </div>
             </div>
           </div>
         )}
