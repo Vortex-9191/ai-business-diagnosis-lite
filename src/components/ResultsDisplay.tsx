@@ -78,8 +78,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
             if (urlMatch) {
               const fileId = urlMatch[1];
               // 複数のGoogleドライブURL形式を試す
-              // 1. thumbnail APIを使用（高速、CORS対応） - サイズを適切に
-              output = `https://drive.google.com/thumbnail?id=${fileId}&sz=w600`;
+              // 1. thumbnail APIを使用（高速、CORS対応） - サイズをさらに小さく
+              output = `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`;
               console.log('🖼️ Using Google Drive thumbnail API:', output);
               console.log('🖼️ File ID:', fileId);
             } else {
@@ -210,12 +210,12 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
           <div className="flex justify-center">
             {output.includes('drive.google.com') ? (
               // Googleドライブの場合
-              <div className="w-full max-w-md mx-auto">
+              <div className="w-full max-w-sm mx-auto">
                 <img 
                   src={output} 
                   alt="AI診断結果チャート" 
                   className="w-full h-auto rounded-lg shadow-md"
-                  style={{ maxHeight: '400px', objectFit: 'contain' }}
+                  style={{ maxHeight: '280px', objectFit: 'contain' }}
                   onError={(e) => {
                     console.error('❌ Image load error, trying alternative URL:', output);
                     // エラー時に代替URLを試す
@@ -250,12 +250,12 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
               </div>
             ) : (
               // 通常のURLの場合
-              <div className="w-full max-w-md mx-auto">
+              <div className="w-full max-w-sm mx-auto">
                 <img 
                   src={output} 
                   alt="AI診断結果チャート" 
                   className="w-full h-auto rounded-lg shadow-md"
-                  style={{ maxHeight: '400px', objectFit: 'contain' }}
+                  style={{ maxHeight: '280px', objectFit: 'contain' }}
                 />
               </div>
             )}
@@ -290,29 +290,31 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
                   <div className="space-y-6">
                     {/* タイプセクション */}
                     {typeContent && (
-                      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border-2 border-purple-200">
-                        <div className="flex items-center mb-4">
-                          <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-3">
-                            <span className="text-white font-bold text-lg">A</span>
+                      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                        <div className="flex items-start">
+                          <div className="w-12 h-12 bg-[#59B3B3] rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                            <span className="text-white font-bold text-xl">A</span>
                           </div>
-                          <h4 className="text-xl font-bold text-slate-800">あなたのタイプ</h4>
+                          <div>
+                            <h4 className="text-sm font-medium text-slate-500 mb-2">あなたのタイプ</h4>
+                            <p className="text-xl font-bold text-slate-900">
+                              {typeContent.replace(/<[^>]*>/g, '')}
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-lg text-slate-700 font-medium">
-                          {typeContent.replace(/<[^>]*>/g, '')}
-                        </p>
                       </div>
                     )}
                     
                     {/* 使い方セクション */}
                     {usageContent && (
-                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border-2 border-blue-200">
+                      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
                         <div className="flex items-center mb-4">
-                          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-                            <span className="text-white font-bold">✓</span>
+                          <div className="w-8 h-8 bg-[#59B3B3] rounded-lg flex items-center justify-center mr-3">
+                            <div className="w-4 h-4 bg-white rounded-full"></div>
                           </div>
-                          <h4 className="text-xl font-bold text-slate-800">こんな使い方がいいかも？</h4>
+                          <h4 className="text-sm font-medium text-slate-500">こんな使い方がおすすめ</h4>
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-3 pl-11">
                           {usageContent.split('\n').filter(line => line.trim()).map((line, index) => {
                             // 各行をパースしてリストアイテムとして表示
                             const cleanLine = line.replace(/<[^>]*>/g, '').trim();
@@ -320,8 +322,8 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
                             
                             return (
                               <div key={index} className="flex items-start">
-                                <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                <p className="text-slate-700">{cleanLine}</p>
+                                <span className="text-[#59B3B3] mr-3 mt-1 text-lg">•</span>
+                                <p className="text-slate-600 leading-relaxed">{cleanLine}</p>
                               </div>
                             );
                           }).filter(Boolean)}
