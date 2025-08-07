@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   try {
     // APIキーをサーバーサイドで直接設定（完全に隠蔽）
-    const API_KEY = 'app-Oj7SUhTt1bzElA9m9wy0UEJf';
+    const API_KEY = 'app-9lSfmRYLiVcjQE2F7OBO47qS'; // ライト版用APIキー
     const API_ENDPOINT = 'https://service.anddigital.co.jp/v1/workflows/run';
 
     if (!API_KEY) {
@@ -31,6 +31,20 @@ export default async function handler(req, res) {
 
     console.log('🚀 Proxying request to Dify API');
     console.log('📊 Request payload keys:', Object.keys(payload));
+    console.log('📊 Request inputs keys:', payload.inputs ? Object.keys(payload.inputs) : 'No inputs');
+    
+    // Q1-Q10が存在するか確認
+    if (payload.inputs) {
+      const missingQuestions = [];
+      for (let i = 1; i <= 10; i++) {
+        if (!payload.inputs[`Q${i}`]) {
+          missingQuestions.push(`Q${i}`);
+        }
+      }
+      if (missingQuestions.length > 0) {
+        console.warn('⚠️ Missing questions:', missingQuestions);
+      }
+    }
     
     // 早期レスポンス：リクエスト受信を即座に確認
     res.setHeader('X-Request-Started', Date.now());
@@ -57,9 +71,20 @@ export default async function handler(req, res) {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Dify API Error:', response.status, errorText);
+        
+        // より詳細なエラー情報を返す
+        let errorMessage = 'Dify API error';
+        try {
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.message || errorJson.error || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        
         return res.status(response.status).json({ 
-          error: 'Dify API error',
-          status: response.status 
+          error: errorMessage,
+          status: response.status,
+          details: errorText
         });
       }
 
