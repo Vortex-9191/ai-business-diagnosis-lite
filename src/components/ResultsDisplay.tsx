@@ -73,12 +73,14 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
           // 最初のセクション：GoogleドライブURL
           if (sections[0]) {
             console.log('🔍 Checking first section for image URL:', sections[0]);
-            // GoogleドライブのURLを抽出（viewリンクを直接表示用に変換）
+            // GoogleドライブのURLを抽出
             const urlMatch = sections[0].match(/https:\/\/drive\.google\.com\/file\/d\/([^\/\s]+)/);
             if (urlMatch) {
               const fileId = urlMatch[1];
-              output = `https://drive.google.com/uc?export=view&id=${fileId}`;
-              console.log('🖼️ Converted Google Drive URL:', output);
+              // 複数のGoogleドライブURL形式を試す
+              // 1. thumbnail APIを使用（高速、CORS対応）
+              output = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+              console.log('🖼️ Using Google Drive thumbnail API:', output);
               console.log('🖼️ File ID:', fileId);
             } else {
               // URLが見つからない場合、そのまま使用
@@ -206,20 +208,55 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
             <h3 className="text-2xl font-bold text-slate-800">AI診断結果</h3>
           </div>
           <div className="flex justify-center">
-            <img 
-              src={output} 
-              alt="AI診断結果チャート" 
-              className="max-w-full h-auto rounded-lg shadow-md"
-              style={{ maxHeight: '500px' }}
-              onError={(e) => {
-                console.error('❌ Image load error:', output);
-                // 画像読み込みエラー時は代替テキストを表示
-                const parent = e.currentTarget.parentElement;
-                if (parent) {
-                  parent.innerHTML = '<div class="flex items-center justify-center h-64 bg-gray-50 rounded-lg"><p class="text-gray-500">診断チャートの読み込みに失敗しました</p></div>';
-                }
-              }}
-            />
+            {output.includes('drive.google.com') ? (
+              // Googleドライブの場合はiframeを使用
+              <div className="w-full max-w-2xl">
+                <img 
+                  src={output} 
+                  alt="AI診断結果チャート" 
+                  className="w-full h-auto rounded-lg shadow-md"
+                  style={{ maxHeight: '500px' }}
+                  onError={(e) => {
+                    console.error('❌ Image load error, trying alternative URL:', output);
+                    // エラー時に代替URLを試す
+                    const fileIdMatch = output.match(/id=([^&]+)/);
+                    if (fileIdMatch) {
+                      const fileId = fileIdMatch[1];
+                      // uc?export=view形式を試す
+                      const altUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+                      if (e.currentTarget.src !== altUrl) {
+                        console.log('🔄 Trying alternative URL:', altUrl);
+                        e.currentTarget.src = altUrl;
+                      } else {
+                        // 両方失敗した場合はリンクを表示
+                        const parent = e.currentTarget.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `
+                            <div class="flex flex-col items-center justify-center p-8 bg-gray-50 rounded-lg">
+                              <p class="text-gray-600 mb-4">診断チャートの表示に失敗しました</p>
+                              <a href="https://drive.google.com/file/d/${fileId}/view" 
+                                 target="_blank" 
+                                 rel="noopener noreferrer"
+                                 class="px-4 py-2 bg-[#59B3B3] text-white rounded-lg hover:bg-[#4A9999] transition-colors">
+                                Googleドライブで表示
+                              </a>
+                            </div>
+                          `;
+                        }
+                      }
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              // 通常のURLの場合
+              <img 
+                src={output} 
+                alt="AI診断結果チャート" 
+                className="max-w-full h-auto rounded-lg shadow-md"
+                style={{ maxHeight: '500px' }}
+              />
+            )}
           </div>
         </div>
       ) : (
