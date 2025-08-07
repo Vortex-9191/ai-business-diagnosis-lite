@@ -308,8 +308,8 @@ function App() {
         }
         break;
       case 3:
-        // Q1-Q35の数値質問の検証（すべて必須）
-        for (let i = 1; i <= 35; i++) {
+        // Q1-Q10の数値質問の検証（すべて必須）
+        for (let i = 1; i <= 10; i++) {
           const key = `Q${i}` as keyof FormData;
           if (!formData[key] || formData[key] === null) {
             newErrors[key] = `Q${i}に回答してください`;
@@ -408,10 +408,6 @@ function App() {
       BusinessChallenge2: '',
       BusinessChallenge3: '',
       Q1: null, Q2: null, Q3: null, Q4: null, Q5: null, Q6: null, Q7: null, Q8: null, Q9: null, Q10: null,
-      Q11: null, Q12: null, Q13: null, Q14: null, Q15: null, Q16: null, Q17: null, Q18: null, Q19: null, Q20: null,
-      Q21: null, Q22: null, Q23: null, Q24: null, Q25: null, Q26: null, Q27: null, Q28: null, Q29: null, Q30: null,
-      Q31: null, Q32: null, Q33: null, Q34: null, Q35: null,
-      Q36: '', Q37: '', Q38: '', Q39: '', Q40: '',
       name: '',
       company: '',
       Yuryo: '',
