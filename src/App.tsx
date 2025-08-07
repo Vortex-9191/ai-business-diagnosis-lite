@@ -512,7 +512,7 @@ function App() {
             </div>
           </div>
           <p className="text-base sm:text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed px-2">
-            あなたのAI活用レベルを診断し、最適な改善提案をお届けします
+            たった1分であなたの生成AI活用状況を簡易診断します
           </p>
         </div>
 
