@@ -524,7 +524,7 @@ function App() {
 
         {/* メインコンテンツ */}
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 p-4 sm:p-6 md:p-8 min-h-[400px] sm:min-h-[600px]">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 p-4 sm:p-6 md:p-8 min-h-[400px] sm:min-h-[500px] relative">
             {renderCurrentStep()}
 
             {/* エラー表示 */}
@@ -548,9 +548,11 @@ function App() {
             )}
           </div>
 
-          {/* ナビゲーションボタン */}
+          {/* ナビゲーションボタン - PCでは固定位置 */}
           {!showTermsStep && currentStep <= 4 && currentStep !== 4.5 && (
-            <div className="flex flex-col sm:flex-row justify-between gap-4 mt-6 sm:mt-8">
+            <div className="fixed bottom-8 left-0 right-0 z-50 px-4 lg:relative lg:bottom-auto lg:left-auto lg:right-auto lg:z-auto lg:px-0">
+            <div className="max-w-6xl mx-auto bg-white lg:bg-transparent rounded-2xl shadow-xl lg:shadow-none border border-slate-200 lg:border-0 p-4 lg:p-0">
+            <div className="flex flex-col sm:flex-row justify-between gap-4 lg:mt-6">
               <button
                 onClick={handleBack}
                 disabled={currentStep === 1}
@@ -596,6 +598,8 @@ function App() {
                   )}
                 </button>
               )}
+            </div>
+            </div>
             </div>
           )}
         </div>

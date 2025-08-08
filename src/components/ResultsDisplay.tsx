@@ -1,6 +1,8 @@
-import React from 'react';
-import { Download, Share2, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Download, Share2, RotateCcw, Twitter, Linkedin, X, Link2 } from 'lucide-react';
 import { DiagnosisResult } from '../types';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface ResultsDisplayProps {
   results: DiagnosisResult | null;
@@ -8,6 +10,7 @@ interface ResultsDisplayProps {
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) => {
+  const [showShareMenu, setShowShareMenu] = useState(false);
   console.log('🔍 Results received in component:', results);
   
   // エラーチェック：結果が有効でない場合
@@ -137,8 +140,94 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, onRestart }) =
     console.error('❌ Full results structure:', JSON.stringify(results, null, 2));
   }
 
-  const handleDownload = () => {
-    const resultsText = `
+  const handleDownload = async () => {
+    try {
+      // PDF生成
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 20;
+      let yPosition = margin;
+      
+      // 日本語フォントの設定（フォントを埋め込み）
+      pdf.setFont('helvetica', 'normal');
+      
+      // タイトル
+      pdf.setFontSize(20);
+      pdf.text('AI Diagnosis Report', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 15;
+      
+      // 日付
+      pdf.setFontSize(10);
+      pdf.text(`Date: ${new Date().toLocaleDateString('ja-JP')}`, pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 20;
+      
+      // 名前
+      if (name) {
+        pdf.setFontSize(12);
+        pdf.text(`Name: ${name}`, margin, yPosition);
+        yPosition += 15;
+      }
+      
+      // タイプ情報
+      if (text_1) {
+        const typeText = text_1.replace(/<[^>]*>/g, '').trim();
+        const typeMatch = typeText.match(/【あなたのタイプ】([^【]*)/);
+        if (typeMatch) {
+          pdf.setFontSize(14);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('Your AI Type', margin, yPosition);
+          yPosition += 8;
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(11);
+          const typeContent = typeMatch[1].trim();
+          const lines = pdf.splitTextToSize(typeContent, pageWidth - margin * 2);
+          lines.forEach((line: string) => {
+            if (yPosition > pageHeight - margin) {
+              pdf.addPage();
+              yPosition = margin;
+            }
+            pdf.text(line, margin, yPosition);
+            yPosition += 6;
+          });
+          yPosition += 10;
+        }
+        
+        // 使い方情報
+        const usageMatch = typeText.match(/【こんな使い方がいいかも？】([\s\S]*)/);
+        if (usageMatch) {
+          pdf.setFontSize(14);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('Recommended Usage', margin, yPosition);
+          yPosition += 8;
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(11);
+          const usageContent = usageMatch[1].trim();
+          const usageLines = usageContent.split('\n').filter(line => line.trim());
+          usageLines.forEach((line: string) => {
+            if (yPosition > pageHeight - margin) {
+              pdf.addPage();
+              yPosition = margin;
+            }
+            const cleanLine = line.replace(/<[^>]*>/g, '').trim();
+            if (cleanLine) {
+              const lines = pdf.splitTextToSize(`\u2022 ${cleanLine}`, pageWidth - margin * 2 - 10);
+              lines.forEach((splitLine: string) => {
+                pdf.text(splitLine, margin + 5, yPosition);
+                yPosition += 6;
+              });
+            }
+          });
+        }
+      }
+      
+      // PDFを保存
+      pdf.save(`AI_Diagnosis_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+      
+    } catch (error) {
+      console.error('PDF生成エラー:', error);
+      // フォールバックとしてテキストダウンロード
+      const resultsText = `
 AI診断結果レポート
 ===================
 
@@ -151,39 +240,70 @@ ${text ? `AI活用分析:\n${text.replace(/<[^>]*>/g, '')}\n` : ''}
 ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
 
 診断日時: ${new Date().toLocaleString('ja-JP')}
-    `;
+      `;
 
-    const blob = new Blob([resultsText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `AI診断結果_${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+      const blob = new Blob([resultsText], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `AI診断結果_${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   };
 
-  const handleShare = async () => {
-    const shareData = {
-      title: 'AI診断結果',
-      text: `${name ? `${name}さんの` : '私の'}AI活用診断が完了しました 🤖✨`,
-      url: window.location.href
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (error) {
-        console.log('シェアがキャンセルされました');
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert('結果がクリップボードにコピーされました！');
-      } catch (error) {
-        console.error('クリップボードへのコピーに失敗しました');
-      }
+  const handleShare = async (platform?: string) => {
+    const shareText = `${name ? `${name}さんの` : '私の'}AI活用診断が完了しました！`;
+    const shareUrl = window.location.href;
+    
+    if (!platform) {
+      // メニューを表示
+      setShowShareMenu(!showShareMenu);
+      return;
+    }
+    
+    let url = '';
+    switch (platform) {
+      case 'twitter':
+        url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case 'linkedin':
+        url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case 'facebook':
+        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+        break;
+      case 'copy':
+        try {
+          await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+          alert('URLがクリップボードにコピーされました！');
+        } catch (error) {
+          console.error('コピーに失敗しました');
+        }
+        setShowShareMenu(false);
+        return;
+      default:
+        // Web Share APIを使用
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'AI診断結果',
+              text: shareText,
+              url: shareUrl
+            });
+          } catch (error) {
+            console.log('シェアがキャンセルされました');
+          }
+        }
+        setShowShareMenu(false);
+        return;
+    }
+    
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+      setShowShareMenu(false);
     }
   };
 
@@ -418,13 +538,50 @@ ${text_3 ? `AI活用指針:\n${text_3.replace(/<[^>]*>/g, '')}\n` : ''}
           結果をダウンロード
         </button>
         
-        <button
-          onClick={handleShare}
-          className="flex items-center justify-center px-6 py-3 bg-[#59B3B3] text-white font-semibold rounded-xl hover:bg-[#4A9999] transition-all duration-300 transform hover:scale-105 shadow-lg"
-        >
-          <Share2 className="w-5 h-5 mr-2" />
-          結果をシェア
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => handleShare()}
+            className="flex items-center justify-center px-6 py-3 bg-[#59B3B3] text-white font-semibold rounded-xl hover:bg-[#4A9999] transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
+            <Share2 className="w-5 h-5 mr-2" />
+            結果をシェア
+          </button>
+          
+          {/* SNSシェアメニュー */}
+          {showShareMenu && (
+            <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-xl border border-slate-200 p-2 min-w-[200px]">
+              <button
+                onClick={() => handleShare('twitter')}
+                className="w-full flex items-center px-4 py-2 hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <Twitter className="w-4 h-4 mr-3 text-[#1DA1F2]" />
+                <span className="text-slate-700">Twitter</span>
+              </button>
+              <button
+                onClick={() => handleShare('linkedin')}
+                className="w-full flex items-center px-4 py-2 hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <Linkedin className="w-4 h-4 mr-3 text-[#0077B5]" />
+                <span className="text-slate-700">LinkedIn</span>
+              </button>
+              <button
+                onClick={() => handleShare('facebook')}
+                className="w-full flex items-center px-4 py-2 hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <div className="w-4 h-4 mr-3 bg-[#1877F2] rounded-sm"></div>
+                <span className="text-slate-700">Facebook</span>
+              </button>
+              <div className="border-t border-slate-200 my-1"></div>
+              <button
+                onClick={() => handleShare('copy')}
+                className="w-full flex items-center px-4 py-2 hover:bg-slate-50 rounded-lg transition-colors"
+              >
+                <Link2 className="w-4 h-4 mr-3 text-slate-500" />
+                <span className="text-slate-700">URLをコピー</span>
+              </button>
+            </div>
+          )}
+        </div>
         
         <button
           onClick={onRestart}

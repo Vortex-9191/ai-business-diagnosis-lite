@@ -22,6 +22,12 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
     BusinessChallenge2: false,
     BusinessChallenge3: false
   });
+  
+  const [showSelections, setShowSelections] = useState({
+    BusinessChallenge1: false,
+    BusinessChallenge2: false,
+    BusinessChallenge3: false
+  });
 
   // その他の職種または存在しない職種（カスタム職種）の場合は空配列
   const isOtherJobType = selectedJobType === 'その他' || !jobSpecificTasks[selectedJobType] || !jobSpecificTasks.hasOwnProperty(selectedJobType);
@@ -60,9 +66,11 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
   const handleTaskSelection = (task: string, challengeKey: string) => {
     if (task === 'その他（自由記述）') {
       setActiveInputs(prev => ({ ...prev, [challengeKey]: true }));
+      setShowSelections(prev => ({ ...prev, [challengeKey]: false }));
       onChallengeUpdate(challengeKey, '');
     } else {
       setActiveInputs(prev => ({ ...prev, [challengeKey]: false }));
+      setShowSelections(prev => ({ ...prev, [challengeKey]: false }));
       onChallengeUpdate(challengeKey, task);
     }
   };
@@ -126,7 +134,7 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
               </div>
 
               {/* 選択済み表示 */}
-              {currentValue && !isActive && currentValue !== 'その他（自由記述）' && (
+              {currentValue && !isActive && !showSelections[challengeKey] && currentValue !== 'その他（自由記述）' && (
                 <div className="mb-6 p-6 bg-teal-50 border-2 border-teal-200 rounded-2xl">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
@@ -138,7 +146,7 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
                     </div>
                     <button
                       onClick={() => {
-                        setActiveInputs(prev => ({ ...prev, [challengeKey]: true }));
+                        setShowSelections(prev => ({ ...prev, [challengeKey]: true }));
                         onChallengeUpdate(challengeKey, '');
                       }}
                       className="flex items-center space-x-2 text-[#59B3B3] hover:text-teal-700 font-medium transition-colors duration-200 bg-white px-4 py-2 rounded-xl hover:bg-teal-50 shadow-sm"
@@ -151,7 +159,7 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
               )}
 
               {/* 選択肢グリッド（その他職種以外の場合のみ表示） */}
-              {!isOtherJobType && !isActive && !currentValue && (
+              {!isOtherJobType && !isActive && (!currentValue || showSelections[challengeKey]) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {tasks.map((task, taskIndex) => (
                     <button
