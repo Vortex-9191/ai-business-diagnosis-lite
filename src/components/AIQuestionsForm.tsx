@@ -20,9 +20,11 @@ const AIQuestionsForm: React.FC<AIQuestionsFormProps> = ({ formData, onAnswerCha
   const totalQuestions = aiQuestions.length;
   const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
 
-  // 質問が変わったらエラーをリセット
+  // 質問が変わったらエラーをリセットして最上部へスクロール
   React.useEffect(() => {
     setShowError(false);
+    // ページ最上部へスクロール
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentQuestionIndex]);
 
   const handleNext = () => {
