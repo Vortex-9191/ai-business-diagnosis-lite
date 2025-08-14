@@ -92,7 +92,7 @@ const AIQuestionsForm: React.FC<AIQuestionsFormProps> = ({ formData, onAnswerCha
       </div>
 
       {/* 質問カード */}
-      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 p-4 sm:p-6 md:p-8 min-h-[400px] sm:min-h-[450px] flex flex-col">
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-200 p-6 sm:p-8 md:p-10 min-h-[400px] sm:min-h-[450px] flex flex-col">
         {/* 質問番号と内容 */}
         <div className="flex-1">
           <div className="text-center mb-6 sm:mb-8">
@@ -159,7 +159,7 @@ const AIQuestionsForm: React.FC<AIQuestionsFormProps> = ({ formData, onAnswerCha
         )}
 
         {/* ナビゲーションボタン */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-200 gap-4 sm:gap-0">
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-slate-200 gap-4 sm:gap-6">
           <button
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0}
