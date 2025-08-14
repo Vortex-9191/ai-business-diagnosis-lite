@@ -36,7 +36,7 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
   const challengeConfig = [
     {
       key: 'BusinessChallenge1',
-      title: '最も時間がかかっている業務課題',
+      title: '1番目に時間がかかっている業務課題',
       subtitle: '毎日の業務で最も時間を取られている作業',
       icon: Clock,
       color: 'bg-[#59B3B3]',
@@ -45,7 +45,7 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
     },
     {
       key: 'BusinessChallenge2',
-      title: '2番目に改善したい業務課題',
+      title: '2番目に時間がかかっている業務課題',
       subtitle: '効率化できれば大きな効果が期待できる作業',
       icon: Target,
       color: 'bg-slate-500',
@@ -54,7 +54,7 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
     },
     {
       key: 'BusinessChallenge3',
-      title: '3番目に改善したい業務課題',
+      title: '3番目に時間がかかっている業務課題',
       subtitle: '将来的に改善を検討したい作業',
       icon: Zap,
       color: 'bg-slate-400',
@@ -182,11 +182,27 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
               {/* 自由記述エリア（その他職種の場合は常に表示、それ以外は条件付き） */}
               {(isOtherJobType || isActive || (currentValue && !tasks.includes(currentValue))) && (
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Edit3 className="w-5 h-5 text-[#59B3B3]" />
-                    <label className="text-lg font-semibold text-slate-700">
-                      自由記述（256文字以内）
-                    </label>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <Edit3 className="w-5 h-5 text-[#59B3B3]" />
+                      <label className="text-lg font-semibold text-slate-700">
+                        自由記述（256文字以内）
+                      </label>
+                    </div>
+                    {!isOtherJobType && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveInputs(prev => ({ ...prev, [challengeKey]: false }));
+                          setShowSelections(prev => ({ ...prev, [challengeKey]: true }));
+                          onChallengeUpdate(challengeKey, '');
+                        }}
+                        className="text-[#59B3B3] hover:text-teal-700 font-medium transition-colors duration-200 flex items-center space-x-2 bg-teal-50 hover:bg-teal-100 px-4 py-2 rounded-xl"
+                      >
+                        <ArrowRight className="w-4 h-4 rotate-180" />
+                        <span>選択肢に戻る</span>
+                      </button>
+                    )}
                   </div>
                   <div className="relative">
                     <textarea
@@ -204,19 +220,6 @@ const BusinessChallengeForm: React.FC<BusinessChallengeFormProps> = ({
                       </div>
                     </div>
                   </div>
-                  {!isActive && !isOtherJobType && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveInputs(prev => ({ ...prev, [challengeKey]: false }));
-                        onChallengeUpdate(challengeKey, '');
-                      }}
-                      className="text-slate-500 hover:text-slate-700 font-medium transition-colors duration-200 flex items-center space-x-2"
-                    >
-                      <ArrowRight className="w-4 h-4 rotate-180" />
-                      <span>選択肢に戻る</span>
-                    </button>
-                  )}
                 </div>
               )}
             </div>

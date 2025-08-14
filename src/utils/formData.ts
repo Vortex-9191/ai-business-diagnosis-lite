@@ -221,16 +221,57 @@ export const aiTools = [
 ];
 
 export const aiQuestions: AIQuestion[] = [
-  { id: 'Q1', text: '生成AIを業務で月1回以上活用していますか？', category: 'literacy' },
-  { id: 'Q2', text: '社内に生成AI利用ガイドラインがあり、相談窓口を把握していますか？', category: 'governance' },
-  { id: 'Q3', text: 'AIツールに入力してはいけない機密情報を判断でき、ファクトチェックを実施していますか？', category: 'governance' },
-  { id: 'Q4', text: '目的に応じて『役割→文脈→条件→出力形式』を意識したプロンプトを作成できますか？', category: 'prompt' },
-  { id: 'Q5', text: '複数のAIツール（ChatGPT/Claude/Gemini等）の特徴を理解し、用途別に使い分けていますか？', category: 'literacy' },
-  { id: 'Q6', text: 'プロンプトや活用事例をチームで共有し、議事録作成等の定型業務でAIを活用していますか？', category: 'prompt' },
-  { id: 'Q7', text: 'Excel/GAS/VBA等を使った業務自動化や、Slack/Teams上でのAIワークフロー構築経験はありますか？', category: 'automation' },
-  { id: 'Q8', text: 'DifyなどのノーコードツールやGPTs/AI Botを業務改善に活用していますか？', category: 'automation' },
-  { id: 'Q9', text: '社内文書のRAG検索システム構築や、AIエージェントによる業務自動化を実施していますか？', category: 'advanced' },
-  { id: 'Q10', text: 'AI活用のROI（削減工数/実施コスト）を可視化し、定期的に改善していますか？', category: 'advanced' }
+  // AIリテラシー & 期待度
+  { id: 'Q1', text: '「生成 AI」をプライベートで活用した事はありますか？', category: 'literacy' },
+  { id: 'Q2', text: '「生成 AI」を業務で活用した事はありますか？', category: 'literacy' },
+  { id: 'Q3', text: '「LLM」とは何かを、あなたの言葉で他の人に説明できますか？', category: 'literacy' },
+  { id: 'Q4', text: '「プロンプト」の意味を他者に説明できますか？', category: 'literacy' },
+  { id: 'Q5', text: '「RAG」という技術の概要を他者に説明できますか？', category: 'literacy' },
+  { id: 'Q6', text: '業務外で ChatGPT／Gemini／Claude などの生成 AI ツールを月に 1 回以上使っていますか？', category: 'literacy' },
+  { id: 'Q7', text: '業務中に ChatGPT／Gemini／Claude などの生成 AI ツールを月に 1 回以上使っていますか？', category: 'literacy' },
+  { id: 'Q8', text: '「生成 AI ツール」に複数種類あることを認識し、用途に応じて使い分けていますか？', category: 'literacy' },
+  { id: 'Q9', text: '「生成 AI」にテキスト以外（画像や音声など）もインプットできることを知っていますか？', category: 'literacy' },
+  { id: 'Q10', text: '生成 AI と対話する際、目的に応じた「役割 → 文脈 → 条件 → 出力形式」を意識して伝えられますか？', category: 'prompt' },
+  
+  // プロンプト活用・業務活用度
+  { id: 'Q11', text: 'プロンプトの回答が微妙だった際、修正を与えて精度を高められますか？', category: 'prompt' },
+  { id: 'Q12', text: 'よく使うプロンプトや AI 活用事例をチームと共有し、全体の業務効率化に貢献できていますか？', category: 'prompt' },
+  { id: 'Q13', text: '「議事録生成」や「メール返信」など定型業務で生成 AI を活用していますか？', category: 'prompt' },
+  { id: 'Q14', text: '請求書・申請書の読み取り等、文字起こし（OCR）作業で AI ツールを活用していますか？', category: 'prompt' },
+  { id: 'Q15', text: '外国語の文書・メール翻訳に AI を活用していますか？', category: 'prompt' },
+  { id: 'Q16', text: '画像・動画生成／編集を行う際に AI ツールを活用していますか？', category: 'prompt' },
+  { id: 'Q17', text: 'プレゼン資料や提案書作成の際、構成案・文面・デザインに AI を活用していますか？', category: 'prompt' },
+  { id: 'Q18', text: 'データ集計・分析やグラフ作成、レポート要約作成に AI を活用していますか？', category: 'prompt' },
+  { id: 'Q19', text: 'AI に嘘の回答（ハルシネーション）があることを理解し、ファクトチェックを実施していますか？', category: 'governance' },
+  { id: 'Q20', text: 'AI ツールにインプットしてはいけない情報（機密情報等）を区別し、適切に利用できていますか？', category: 'governance' },
+  
+  // ガバナンス・リスクマネジメント基盤
+  { id: 'Q21', text: '社内に生成 AI 利用ガイドラインがあり、利用に困った際の相談窓口を知っていますか？', category: 'governance' },
+  { id: 'Q22', text: '社内で ChatGPT Team／Copilot／Gemini Workspace など法人版 AI ツールが導入されていますか？', category: 'governance' },
+  { id: 'Q23', text: '組織内で生成 AI の活用が文化として根付いていますか？', category: 'governance' },
+  { id: 'Q24', text: '経営層／マネージャーが生成 AI の重要性を理解し、推進リーダーが存在しますか？', category: 'governance' },
+  { id: 'Q25', text: '人事評価や採用プロセスに生成 AI を活用していますか？', category: 'governance' },
+  { id: 'Q26', text: 'AI 活用時に ROI（=投資効果：想定の削減工数 | 実施コスト）を可視化/算出していますか？', category: 'governance' },
+  { id: 'Q27', text: 'ChatGPT Team／Claude Team など、チームで共有利用できるサービスを契約していますか？', category: 'governance' },
+  
+  // 業務自動化・非エンジニア上位スキル
+  { id: 'Q28', text: 'Excel／Google スプレッドシート等の関数を活用して自身で業務効率化は可能ですか？', category: 'automation' },
+  { id: 'Q29', text: 'Google スプレッドシートや Excel で、マクロやスクリプトを使って複雑な作業を自動化できますか？', category: 'automation' },
+  { id: 'Q30', text: 'API（アプリ同士がデータをやりとりする仕組み）の説明書を読んで、簡単なデータ送受信（POSTやGET）を試すことができますか？', category: 'automation' },
+  
+  // 高度AI活用
+  { id: 'Q31', text: '社内文書を Embedding し RAG 検索を行っていますか？', category: 'advanced' },
+  { id: 'Q32', text: 'RAG の回答精度を定期評価・改善していますか？', category: 'advanced' },
+  { id: 'Q33', text: '社内のデータを使って、AIモデル（LLM）を自社用に学習し直したことがありますか？', category: 'advanced' },
+  { id: 'Q34', text: 'AI エージェントで「請求書▶振込」などを自動で実行させた事はありますか？', category: 'advanced' },
+  { id: 'Q35', text: 'AI 活用時に ROI（=投資効果：想定の削減工数 | 実施コスト）を可視化/算出していますか？', category: 'advanced' },
+  
+  // 任意回答項目（テキスト入力）
+  { id: 'Q36', text: '生成AIを活用して解決したい悩みや目的はありますか？', category: 'optional', type: 'text' },
+  { id: 'Q37', text: '生成AIに関わらずご自身の業務内で時間が要しており削減したい業務はありますか？', category: 'optional', type: 'text' },
+  { id: 'Q38', text: '社内で最も生成AIに詳しい方は誰だと思いますか？（記入例：田中 太郎）', category: 'optional', type: 'text' },
+  { id: 'Q39', text: '社内で生成AI推進を行う際に適任だと思う方は誰だと思いますか？（記入例：田中 太郎）', category: 'optional', type: 'text' },
+  { id: 'Q40', text: '上記の方を上げた理由を教えてください。', category: 'optional', type: 'text' }
 ];
 
 export const scaleLabels = [
@@ -254,9 +295,10 @@ export const businessUseOptions: BusinessUseOption[] = [
 ];
 
 export const questionCategories: Record<string, QuestionCategory> = {
-  literacy: { name: 'AIリテラシー & 期待度', color: '#3B82F6', questions: 'Q1,Q5' },
-  governance: { name: 'ガバナンス・リスク基盤', color: '#EF4444', questions: 'Q2-Q3' },
-  prompt: { name: 'プロンプト活用度', color: '#10B981', questions: 'Q4,Q6' },
-  automation: { name: '自動化スキル', color: '#F59E0B', questions: 'Q7-Q8' },
-  advanced: { name: '高度AI技術', color: '#8B5CF6', questions: 'Q9-Q10' }
+  literacy: { name: 'AIリテラシー & 期待度', color: '#3B82F6', questions: 'Q1-Q9' },
+  prompt: { name: 'プロンプト活用・業務活用度', color: '#10B981', questions: 'Q10-Q18' },
+  governance: { name: 'ガバナンス・リスク基盤', color: '#EF4444', questions: 'Q19-Q27' },
+  automation: { name: '業務自動化・非エンジニア上位スキル', color: '#F59E0B', questions: 'Q28-Q30' },
+  advanced: { name: '高度AI活用', color: '#8B5CF6', questions: 'Q31-Q35' },
+  optional: { name: '任意回答', color: '#6B7280', questions: 'Q36-Q40' }
 };

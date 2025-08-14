@@ -61,8 +61,15 @@ const AIQuestionsForm: React.FC<AIQuestionsFormProps> = ({ formData, onAnswerCha
               
               {/* 質問番号と内容 */}
               <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#59B3B3] rounded-xl sm:rounded-2xl text-white font-bold text-lg sm:text-xl mb-4 shadow-lg">
-                  {question.id}
+                <div className="flex items-center justify-center mb-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#59B3B3] rounded-xl sm:rounded-2xl text-white font-bold text-lg sm:text-xl shadow-lg">
+                    {question.id}
+                  </div>
+                  {question.type === 'text' && (
+                    <span className="ml-3 px-3 py-1 bg-gray-100 text-gray-600 text-xs sm:text-sm rounded-full font-medium">
+                      任意回答
+                    </span>
+                  )}
                 </div>
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-800 leading-relaxed max-w-3xl mx-auto px-2">
                   {question.text}
@@ -73,17 +80,22 @@ const AIQuestionsForm: React.FC<AIQuestionsFormProps> = ({ formData, onAnswerCha
               <div className="space-y-3">
                 {question.type === 'text' ? (
                   <div className="max-w-2xl mx-auto w-full">
-                    <input
-                      type="text"
+                    <textarea
                       value={(currentValue as string) || ''}
                       onChange={(e) => handleAnswerSelect(question.id, e.target.value)}
-                      placeholder="自由記述（任意）"
-                      className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-slate-200 rounded-xl sm:rounded-2xl focus:ring-4 focus:ring-teal-200 focus:border-[#59B3B3] transition-all duration-300 text-base sm:text-lg"
+                      placeholder="ご自由にお書きください（任意回答）"
+                      className="w-full px-4 sm:px-6 py-3 sm:py-4 border-2 border-slate-200 rounded-xl sm:rounded-2xl focus:ring-4 focus:ring-teal-200 focus:border-[#59B3B3] transition-all duration-300 text-base sm:text-lg resize-none"
                       maxLength={256}
+                      rows={3}
                     />
-                    <p className="text-xs sm:text-sm text-slate-500 mt-2 text-center">
-                      ※ この質問は任意回答です
-                    </p>
+                    <div className="flex justify-between items-center mt-2">
+                      <p className="text-xs sm:text-sm text-slate-500">
+                        ※ この質問は任意回答です。スキップできます。
+                      </p>
+                      <p className="text-xs sm:text-sm text-slate-400">
+                        {(currentValue as string)?.length || 0}/256
+                      </p>
+                    </div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
